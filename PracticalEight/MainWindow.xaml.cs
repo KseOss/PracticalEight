@@ -1,4 +1,4 @@
-﻿using Pr8;
+using Pr8;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,6 +36,13 @@ namespace PracticalEight
         {
             string modelbus = txtModel.Text;
             string seatpas = txtSeat.Text;
+
+            //проверка на пустые значения
+            if (string.IsNullOrWhiteSpace(modelbus) || string.IsNullOrEmpty(seatpas))
+            {
+                MessageBox.Show("Пожалуйста заполните все поля", "ОШИБКА ввода", MessageBoxButton.OK, MessageBoxImage.Error);
+                return; //выход из метода если есть ошибка
+            }
             if (int.TryParse(seatpas, out int setaPassanger))
             {
                 Bus bus = new Bus(modelbus, setaPassanger);
