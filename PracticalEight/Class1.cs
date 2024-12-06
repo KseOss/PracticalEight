@@ -1,59 +1,36 @@
-using Pr8;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using PracticalEight;
+using System;
 
-namespace PracticalEight
+namespace Pr8
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
+    public class Bus : IAuto, IPassenger, ICloneable, IComparable
     {
-        public MainWindow()
-        {
-            InitializeComponent();
+        public string ModelBus {  get; set; }
+        public int SeatPassenger {  get; set; }
+
+        public Bus(string modelBus, int setaPassenger) 
+        { 
+            ModelBus = modelBus;
+            SeatPassenger = setaPassenger;    
         }
-        private void Exit_Click(object sender, RoutedEventArgs e) //Создание кнопки для меню "Справка" - выход
+        public string GetInfo() 
+        { 
+            return $"Модель автобуса - {ModelBus} и количество вмещаемых пассажиров - {SeatPassenger} ";
+        }
+        public int CompareTo(object obj)
         {
-            this.Close();
+            Bus temp = obj as Bus;
+            if (temp != null) 
+            {
+                return this.SeatPassenger.CompareTo(temp.SeatPassenger);
+            }
+            return 0;
+        }
+        public object Clone()
+        {
+            return new Bus(this.ModelBus, this.SeatPassenger);
         }
 
-        // Обработчик кнопки "О программе"
-        private void About_Click(object sender, RoutedEventArgs e) //Создание кнопки для меню "Справка" - о программе
-        {
-            MessageBox.Show("Разработчик: Сухомяткина Ксения\nНомер работы: 8\nЗадание: Создать интерфейсы - автомобиль, пассажирский транспорт. Создать класс автобус. Класс должен включать конструктор, функцию для формирования строки информации об автобусе. Сравнение производить по вместимости пассажиров.", "О программе");
-        }
-
-        private void btnInfo_Click(object sender, RoutedEventArgs e)
-        {
-            string modelbus = txtModel.Text;
-            string seatpas = txtSeat.Text;
-
-            //проверка на пустые значения
-            if (string.IsNullOrWhiteSpace(modelbus) || string.IsNullOrEmpty(seatpas))
-            {
-                MessageBox.Show("Пожалуйста заполните все поля", "ОШИБКА ввода", MessageBoxButton.OK, MessageBoxImage.Error);
-                return; //выход из метода если есть ошибка
-            }
-            if (int.TryParse(seatpas, out int setaPassanger))
-            {
-                Bus bus = new Bus(modelbus, setaPassanger);
-                string busInfo = bus.GetInfo();
-                txtInfoBus.Text = busInfo;
-            }
-            else
-            {
-                MessageBox.Show("Введите корректное количество мест","Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            
-        }
     }
+
 }
