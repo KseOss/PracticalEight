@@ -38,19 +38,21 @@ namespace PracticalEight
             string seatpas = txtSeat.Text;
 
             //проверка на пустые значения
-            if (string.IsNullOrWhiteSpace(modelbus) || string.IsNullOrEmpty(seatpas))
+            if (string.IsNullOrWhiteSpace(modelbus) || string.IsNullOrEmpty(seatpas)) //Если одно из полей пустое, показываем сообщение об ошибке
             {
                 MessageBox.Show("Пожалуйста заполните все поля", "ОШИБКА ввода", MessageBoxButton.OK, MessageBoxImage.Error);
                 return; //выход из метода если есть ошибка
             }
             if (int.TryParse(seatpas, out int setaPassanger))
             {
+                //создание нового объекта Bus с веденной моделью и количеством мест
                 Bus bus = new Bus(modelbus, setaPassanger);
-                string busInfo = bus.GetInfo();
-                txtInfoBus.Text = busInfo;
+                string busInfo = bus.GetInfo(); //получение информации об автобусе
+                txtInfoBus.Text = busInfo; //отображение информации в текстовом поле для вывода
             }
             else
             {
+                //если преобразование не удалось, показываем сообщение об ошибке
                 MessageBox.Show("Введите корректное количество мест","Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             
