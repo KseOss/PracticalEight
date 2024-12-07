@@ -20,7 +20,7 @@ namespace Pr8
         public int CompareTo(object obj)//реализация интерфейса
             //позволяет сравнивать объекты с другими объектами
         {
-            Bus temp = obj as Bus; //Принимает объект obj, который затем приводится к типу Bus
+            Bus temp = (Bus)obj; //Принимает объект obj, который затем приводится к типу Bus
             if (temp != null) //Елси obj не является null и успешно приводится к типу Bus, производится сравнение количества мест между текущим объектом и переданным метсом
             {
                 return this.SeatPassenger.CompareTo(temp.SeatPassenger);
