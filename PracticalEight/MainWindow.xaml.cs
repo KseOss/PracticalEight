@@ -1,4 +1,5 @@
-using Pr8;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -9,53 +10,78 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using PRNINE;
+using static PRNINE.Class1;
 
-namespace PracticalEight
+namespace PrNine
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private Participant[] participant; //массив участников забега
+        private int participantCount;
         public MainWindow()
         {
             InitializeComponent();
+            participant = new Participant[8]; //можно заполнить в масив максимум 8 участников
+            participantCount = 0; //счетчик участников забега начинается с нуля
         }
-        private void Exit_Click(object sender, RoutedEventArgs e) //Создание кнопки для меню "Справка" - выход
+        //Кнопка о программе
+        private void About(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Разработчик: Сухомяткина Ксения ИСП-34\nНомер работы: 9\nЗадание: Заполнить таблицу участников забега на 100 метров на 8 человек с полями: ФИО, номер, результат. Вывести результат на экран. Вывести средний результат.", "❗ О программе");
+        }
+        //Кнопка выхода
+        private void Exit(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
-
-        // Обработчик кнопки "О программе"
-        private void About_Click(object sender, RoutedEventArgs e) //Создание кнопки для меню "Справка" - о программе
+        //Кнопка добавления участников
+        private void AddPeople(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Разработчик: Сухомяткина Ксения\nНомер работы: 8\nЗадание: Создать интерфейсы - автомобиль, пассажирский транспорт. Создать класс автобус. Класс должен включать конструктор, функцию для формирования строки информации об автобусе. Сравнение производить по вместимости пассажиров.", "О программе");
-        }
-
-        private void btnInfo_Click(object sender, RoutedEventArgs e)
-        {
-            string modelbus = txtModel.Text;
-            string seatpas = txtSeat.Text;
-
-            //проверка на пустые значения
-            if (string.IsNullOrWhiteSpace(modelbus) || string.IsNullOrEmpty(seatpas)) //Если одно из полей пустое, показываем сообщение об ошибке
+           
+            if (participantCount < 8)
             {
-                MessageBox.Show("Пожалуйста заполните все поля", "ОШИБКА ввода", MessageBoxButton.OK, MessageBoxImage.Error);
-                return; //выход из метода если есть ошибка
-            }
-            if (int.TryParse(seatpas, out int setaPassanger))
-            {
-                //создание нового объекта Bus с веденной моделью и количеством мест
-                Bus bus = new Bus(modelbus, setaPassanger);
-                string busInfo = bus.GetInfo(); //получение информации об автобусе
-                txtInfoBus.Text = busInfo; //отображение информации в текстовом поле для вывода
+                string fio = fio_TB.Text;
+                if (int.TryParse(num_TB.Text, out int number) && double.TryParse(res_TB.Text,out double result))
+                {
+                    participant[participantCount] = new Participant(fio,number,result);
+                    participantCount++;
+                    //очистка полей ввода
+                    fio_TB.Clear();
+                    num_TB.Clear();
+                    res_TB.Clear();
+
+                    DisplayResults();
+                }
+                else
+                {
+                    MessageBox.Show("Пожалуста, введите корректные данные для номера и результат", "ОШИБКА ВВОДА");
+                }
             }
             else
             {
-                //если преобразование не удалось, показываем сообщение об ошибке
-                MessageBox.Show("Введите корректное количество мест","Ошибка ввода", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Достигнуто максимальное количество участников","");
             }
+        }
+        private void DisplayResults()
+        {
             
+            DataTable dt = new DataTable();
+            dt.Columns.Add("ФИО");
+            dt.Columns.Add("Номер");
+            dt.Columns.Add("Результат (сек)");
+            double _result = 0;
+
+            for (int i = 0; i < participantCount; i++)
+            {
+                dt.Rows.Add(participant[i].FIO, participant[i].Number, participant[i].Result);
+                _result += participant[i].Result;
+            }
+            double AVG = _result / participantCount; //средний рузельтат
+            ResultsDataGrid.ItemsSource = dt.DefaultView;
+            AvgResults.Text = ($"Средний результат: {AVG:F2} секунд");
+
+
         }
     }
 }
